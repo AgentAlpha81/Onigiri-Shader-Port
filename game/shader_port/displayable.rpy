@@ -26,7 +26,7 @@
                                                   self.default_controls["JUMP"],
                                                   self.default_controls["DUCK"])}
 
-            
+            self.pano = renpy.displayable("panorama.jpg")
 
         def event(self, ev, x, y, st):
             if ev.type == pygame.KEYDOWN and ev.key in self.keymap:
@@ -46,25 +46,28 @@
 
             center = vec2(w, h) / 2.0
             mouse_rel = (center - vec2(*pygame.mouse.get_pos())) * 0.01
+            old_yaw = self.camera_rot.y
             self.camera_rot -= mouse_rel
-            self.camera_rot %= math.tau
-
+            self.camera_rot %= math.tau            
             pygame.mouse.set_pos(center)
 
+            # Защита от сальтух
+            cor_rot = (self.camera_rot.y+math.pi)%math.tau
+            if cor_rot > math.tau - math.pi / 2:
+                self.camera_rot.y = old_yaw                
+            elif cor_rot < math.pi / 2:
+                self.camera_rot.y = old_yaw
+
+
+            # Направление движения
             direction = vec3()
             temp_direction = vec3()
-            if self.keymap[self.default_controls["FORWARD"]]:
-                direction += (-1.0, .0, .0)
-            if self.keymap[self.default_controls["BACKWARD"]]:
-                direction += (1.0, .0, .0)
-            if self.keymap[self.default_controls["STRAFE_LEFT"]]:
-                direction += (.0, 1.0, .0)
-            if self.keymap[self.default_controls["STRAFE_RIGHT"]]:
-                direction += (.0, -1.0, .0)
-            if self.keymap[self.default_controls["JUMP"]]:
-                direction += (.0, .0, 1.0)
-            if self.keymap[self.default_controls["DUCK"]]:
-                direction += (.0, .0, -1.0)
+            if self.keymap[self.default_controls["FORWARD"]]: direction.x += -1.0
+            if self.keymap[self.default_controls["BACKWARD"]]: direction.x += 1.0
+            if self.keymap[self.default_controls["STRAFE_LEFT"]]: direction.y += 1.0
+            if self.keymap[self.default_controls["STRAFE_RIGHT"]]: direction.y += -1.0
+            if self.keymap[self.default_controls["JUMP"]]: direction.z += 1.0
+            if self.keymap[self.default_controls["DUCK"]]:    direction.z += -1.0
 
             temp_direction.zxy = vec3(direction.z * math.cos(-self.camera_rot.y) - direction.x * math.sin(-self.camera_rot.y),
                                       direction.z * math.sin(-self.camera_rot.y) + direction.x * math.cos(-self.camera_rot.y),
@@ -74,11 +77,7 @@
                              temp_direction.x * math.sin(self.camera_rot.x) + temp_direction.y * math.cos(self.camera_rot.x),
                              temp_direction.z)
 
-
-            print(self.camera_pos, direction, self.movement_speed, dt)
             self.camera_pos += direction * self.movement_speed * dt
-
-
 
             rv = renpy.Render(w, h)
 
@@ -92,11 +91,13 @@
             shader_rend.add_uniform("u_rot", self.camera_rot)
             shader_rend.add_uniform("u_pos", self.camera_pos)
 
+            pano_rend = renpy.render(self.pano, w, h, st, at)
+            pano_rend = pano_rend.render_to_texture()
+            shader_rend.add_uniform("tex1", pano_rend)
+
             rv.blit(shader_rend, (0, 0))
-            rv.blit(Text(str(self.keymap).replace("{", "(").replace("}", ")")).render(w, h, st, at), (0, 0))
-            rv.blit(Text(str((w, h))).render(w, h, st, at), (0, 36))
-            rv.blit(Text(str(self.camera_rot)).render(w, h, st, at), (0, 72))
-            rv.blit(Text(str(self.camera_pos)).render(w, h, st, at), (0, 36*3))
+            rv.blit(Text(f"pos: {round(self.camera_pos,3)}").render(w, h, st, at), (0, 0))
+            rv.blit(Text(f"pitch: {round(self.camera_rot.x, 3)} yaw: {round((self.camera_rot.y+math.pi)%math.tau, 3)}").render(w, h, st, at), (0, 36))
 
             renpy.redraw(self, .0)
             return rv
