@@ -1,0 +1,10 @@
+﻿I'm sorry, but errors were detected in your script. Please correct the
+errors listed below, and try again.
+
+
+File "game/shader_port/vector.rpy", line 13: invalid syntax
+        def __init__(self, *vals, dims=4, _type=float):
+                                      ^
+
+Ren'Py Version: Ren'Py 7.6.3.23091805
+Thu Nov 28 07:19:45 2024

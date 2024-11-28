@@ -1,0 +1,52 @@
+﻿I'm sorry, but an uncaught exception occurred.
+
+While running game code:
+  File "game/script.rpy", line 3, in script
+    call screen onigiri
+  File "renpy/common/000statements.rpy", line 671, in execute_call_screen
+    store._return = renpy.call_screen(name, *args, **kwargs)
+ShaderError: 0(63) : error C1503: undefined variable "boxIntersect"
+
+
+-- Full Traceback ------------------------------------------------------------
+
+Full traceback:
+  File "game/script.rpy", line 3, in script
+    call screen onigiri
+  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\ast.py", line 1994, in execute
+    self.call("execute")
+  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\ast.py", line 1973, in call
+    return renpy.statements.call(method, parsed, *args, **kwargs)
+  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\statements.py", line 374, in call
+    return method(parsed, *args, **kwargs)
+  File "renpy/common/000statements.rpy", line 671, in execute_call_screen
+    store._return = renpy.call_screen(name, *args, **kwargs)
+  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\exports\statementexports.py", line 345, in call_screen
+    rv = renpy.ui.interact(mouse="screen", type="screen", roll_forward=roll_forward)
+  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\ui.py", line 301, in interact
+    rv = renpy.game.interface.interact(roll_forward=roll_forward, **kwargs)
+  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\display\core.py", line 2201, in interact
+    repeat, rv = self.interact_core(preloads=preloads, trans_pause=trans_pause, pause=pause, pause_start=pause_start, pause_modal=pause_modal, **kwargs) # type: ignore
+  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\display\core.py", line 2865, in interact_core
+    self.draw_screen(root_widget, fullscreen_video, (not fullscreen_video) or video_frame_drawn)
+  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\display\core.py", line 1374, in draw_screen
+    renpy.display.draw.draw_screen(surftree)
+  File "gl2draw.pyx", line 1021, in renpy.gl2.gl2draw.GL2Draw.draw_screen
+  File "gl2draw.pyx", line 1552, in renpy.gl2.gl2draw.GL2DrawingContext.draw
+  File "gl2draw.pyx", line 1533, in renpy.gl2.gl2draw.GL2DrawingContext.draw_one
+  File "gl2draw.pyx", line 1533, in renpy.gl2.gl2draw.GL2DrawingContext.draw_one
+  File "gl2draw.pyx", line 1533, in renpy.gl2.gl2draw.GL2DrawingContext.draw_one
+  [Previous line repeated 5 more times]
+  File "gl2draw.pyx", line 1443, in renpy.gl2.gl2draw.GL2DrawingContext.draw_one
+  File "gl2draw.pyx", line 1398, in renpy.gl2.gl2draw.GL2DrawingContext.draw_model
+  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\gl2\gl2shadercache.py", line 352, in get
+    rv.load()
+  File "gl2shader.pyx", line 315, in renpy.gl2.gl2shader.Program.load
+  File "gl2shader.pyx", line 298, in renpy.gl2.gl2shader.Program.load_shader
+ShaderError: 0(63) : error C1503: undefined variable "boxIntersect"
+
+
+Windows-10-10.0.19045-SP0 AMD64
+Ren'Py 8.4.0.24112602+nightly
+Onigiri Shader Port 1.0
+Thu Nov 28 07:58:03 2024
