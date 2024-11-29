@@ -15,7 +15,7 @@
         def __init__(self, **d_props):
             super().__init__(**d_props)
             self.oldst = .0
-            self.camera_rot = vec2()
+            self.camera_rot = vec2(.0)
             self.camera_pos = vec3(-5.0, .0, .0)
             self.movement_speed = 5.0
 
@@ -44,11 +44,14 @@
             dt = self.oldst - st 
             self.oldst = st
 
+            #if renpy.display.interface.
+
             center = vec2(w, h) / 2.0
             mouse_rel = (center - vec2(*pygame.mouse.get_pos())) * 0.01
             old_yaw = self.camera_rot.y
             self.camera_rot -= mouse_rel
-            self.camera_rot %= math.tau            
+            self.camera_rot %= math.tau    
+            #renpy.display.interface.set_mouse_pos(*center, 1.0)        
             pygame.mouse.set_pos(center)
 
             # Защита от сальтух
@@ -57,7 +60,6 @@
                 self.camera_rot.y = old_yaw                
             elif cor_rot < math.pi / 2:
                 self.camera_rot.y = old_yaw
-
 
             # Направление движения
             direction = vec3()
@@ -107,3 +109,4 @@ screen onigiri():
 
     add gameObj:
         xysize 1.0, 1.0
+        align .5, .5
