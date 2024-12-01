@@ -63,11 +63,12 @@
                 uv /= 3.14159265;
                 uv = uv * .5 + .5;
 
-                vec3 col = vec3(0.6,0.75,0.85) - 0.97*uv.y;
+                vec3 col = vec3(0.6,0.75,0.85) - 1.25*uv.y;
                 vec3 sun = vec3(0.95, 0.9, 1.0);
 
                 sun *= pow(max(0.0, dot(rd, light)), 32.0);
-                return clamp(sun + col, 0.0, 1.0);
+                col = clamp(sun + col, 0.0, 1.0);
+                return col;
             }
 
             vec3 castRay(inout vec3 ro, inout vec3 rd) {
@@ -99,13 +100,14 @@
                 if(it.x > 0.0 && it.x < minIt.x) {
                     minIt = it;
                     n = normalize(planeNormal);
-                    col = vec3(.0, .5, .0);
+                    col = vec3(.75, .75, .75);
                 }
 
                 if(minIt.x == MAX_DIST) return vec3(-1.0);                
                 float diffuse = dot(light, n) * 0.5 + 0.5;
                 float specular = pow(max(0.0, dot(reflect(rd, n), light)), 32.0) * 2.0;
                 col *= mix(diffuse, specular, 0.5);
+                col = mix(col, getSky(rd), 1.0 - exp(-0.0001 * dot(minIt, vec2(1.0)) * dot(minIt, vec2(1.0))));
                 ro += rd * (minIt.x - 0.001);
                 rd = n;
                 return col;
