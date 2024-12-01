@@ -1,9 +1,0 @@
-﻿I'm sorry, but errors were detected in your script. Please correct the
-errors listed below, and try again.
-
-
-File "game/shader_port/displayable.rpy", line 78: is not terminated with a newline. (Check strings and parenthesis.)
-                direction = vec3(temp_direction.x * math.cos(self.camera_rot.x) - temp_direction.y * math.sin(self.camera_rot.x),
-
-Ren'Py Version: Ren'Py 8.4.0.24113005+nightly
-Sun Dec  1 20:34:34 2024
