@@ -58,20 +58,20 @@
                 return vec2(-(dot(ro, p.xyz) + p.w) / dot(rd, p.xyz));
             }
 
-            vec4 getSky(in vec3 rd) {
+            vec3 getSky(in vec3 rd) {
                 vec2 uv = vec2(atan(rd.x, rd.y), asin(rd.z) * 2.0);
                 uv /= 3.14159265;
                 uv = uv * .5 + .5;
 
-                vec4 col = vec4(vec3(0.6,0.75,0.85) - 0.97*uv.y, 1.0);
-                vec4 sun = vec4(0.95, 0.9, 1.0, 1.0);
+                vec3 col = vec3(0.6,0.75,0.85) - 0.97*uv.y;
+                vec3 sun = vec3(0.95, 0.9, 1.0);
 
                 sun *= pow(max(0.0, dot(rd, light)), 32.0);
                 return clamp(sun + col, 0.0, 1.0);
             }
 
-            vec4 castRay(inout vec3 ro, inout vec3 rd) {
-                vec4 col;
+            vec3 castRay(inout vec3 ro, inout vec3 rd) {
+                vec3 col;
                 vec2 minIt = vec2(MAX_DIST);
                 vec2 it;
                 vec3 n;
@@ -82,7 +82,7 @@
                     minIt = it;
                     vec3 itPos = ro + rd * it.x;
                     n = normalize(itPos - spherePos);
-                    col = vec4(1.0, 0.2, 0.1, 1.0);
+                    col = vec3(1.0, 0.2, 0.1);
                 }
 
                 vec3 boxN;
@@ -91,7 +91,7 @@
                 if(it.x > 0.0 && it.x < minIt.x) {
                     minIt = it;
                     n = normalize(boxN);
-                    col = vec4(0.4, 0.6, 0.8, 1.0);
+                    col = vec3(0.4, 0.6, 0.8);
                 }
                
                 vec3 planeNormal = vec3(0.0, 0.0, -1.0);
@@ -99,10 +99,10 @@
                 if(it.x > 0.0 && it.x < minIt.x) {
                     minIt = it;
                     n = normalize(planeNormal);
-                    col = vec4(.0, .5, .0, 1.0);
+                    col = vec3(.0, .5, .0);
                 }
 
-                if(minIt.x == MAX_DIST) return vec4(-1.0);                
+                if(minIt.x == MAX_DIST) return vec3(-1.0);                
                 float diffuse = dot(light, n) * 0.5 + 0.5;
                 float specular = pow(max(0.0, dot(reflect(rd, n), light)), 32.0) * 2.0;
                 col *= mix(diffuse, specular, 0.5);
@@ -112,13 +112,13 @@
             }
 
             vec4 traceRay(in vec3 ro, in vec3 rd) {
-                vec4 col = castRay(ro, rd);
-                if(col.x < 0.0) return getSky(rd);
+                vec3 col = castRay(ro, rd);
+                if(col.x < 0.0) return vec4(getSky(rd), 1.0);
                 vec3 lightDir = light;
                 if(dot(rd, light) > 0.0) {
                     if(castRay(ro, lightDir).x != -1.0) col *= 0.5;
                 }
-                return col;
+                return vec4(col, 1.0);
             }
 
         """,

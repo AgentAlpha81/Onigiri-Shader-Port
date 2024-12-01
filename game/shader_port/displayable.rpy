@@ -2,7 +2,7 @@
     import pygame
     import math
 
-    class OnigiriShaderDisp(renpy.Displayable):
+    class ShaderCamera(renpy.Displayable):
         default_controls = {
             "FORWARD": pygame.K_w,
             "BACKWARD": pygame.K_s,
@@ -12,8 +12,10 @@
             "DUCK": pygame.K_LSHIFT,
             }
 
-        def __init__(self, **d_props):
+        def __init__(self, shader_name, **d_props):
             super().__init__(**d_props)
+            self.shader_name = shader_name
+
             self.oldst = .0
             self.camera_rot = vec2(.0)
             self.camera_pos = vec3(-5.0, .0, .0)
@@ -26,7 +28,6 @@
                                                   self.default_controls["JUMP"],
                                                   self.default_controls["DUCK"])}
 
-            self.pano = renpy.displayable("panorama.jpg")
 
         def event(self, ev, x, y, st):
             if ev.type == pygame.KEYDOWN and ev.key in self.keymap:
@@ -62,24 +63,6 @@
             dt = self.oldst - st 
             self.oldst = st
 
-            #if renpy.display.interface.
-
-            # center = vec2(w, h) / 2.0
-            # mouse_rel = (center - vec2(*pygame.mouse.get_pos())) * 0.01
-
-            # if renpy.display.interface.mouse_focused:
-            #     old_yaw = self.camera_rot.y
-            #     self.camera_rot -= mouse_rel
-            #     self.camera_rot %= math.tau
-            #     pygame.mouse.set_pos(center)
-
-            # Защита от сальтух
-            # cor_rot = (self.camera_rot.y+math.pi)%math.tau
-            # if cor_rot > math.tau - math.pi / 2:
-            #     self.camera_rot.y = old_yaw                
-            # elif cor_rot < math.pi / 2:
-            #     self.camera_rot.y = old_yaw
-
             # Направление движения
             direction = vec3()
             temp_direction = vec3()
@@ -96,8 +79,7 @@
 
             direction = vec3(temp_direction.x * math.cos(self.camera_rot.x) - temp_direction.y * math.sin(self.camera_rot.x),
                              temp_direction.x * math.sin(self.camera_rot.x) + temp_direction.y * math.cos(self.camera_rot.x),
-                             direction.z)
-                             #temp_direction.z)
+                             temp_direction.z)
 
             self.camera_pos += direction * self.movement_speed * dt
 
@@ -113,20 +95,15 @@
             shader_rend.add_uniform("u_rot", self.camera_rot)
             shader_rend.add_uniform("u_pos", self.camera_pos)
 
-            pano_rend = renpy.render(self.pano, w, h, st, at)
-            pano_rend = pano_rend.render_to_texture()
-            shader_rend.add_uniform("tex1", pano_rend)
-
             rv.blit(shader_rend, (0, 0))
             rv.blit(Text(f"pos: {round(self.camera_pos,3)}").render(w, h, st, at), (0, 0))
             rv.blit(Text(f"pitch: {round(self.camera_rot.x, 3)} yaw: {round((self.camera_rot.y+math.pi)%math.tau, 3)}").render(w, h, st, at), (0, 36))
-            rv.blit(Text(f"{renpy.display.interface.in_quit_event}, {renpy.display.interface.shown_window}").render(w, h, st, at), (0, 36*2))
 
             renpy.redraw(self, .0)
             return rv
 
-screen onigiri():
-    default gameObj = OnigiriShaderDisp()
+screen onigiri(shader_name):
+    default gameObj = ShaderCamera(shader_name)
 
     add gameObj:
         xysize 1.0, 1.0
