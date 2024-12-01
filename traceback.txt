@@ -5,48 +5,56 @@ While running game code:
     call screen onigiri
   File "renpy/common/000statements.rpy", line 671, in execute_call_screen
     store._return = renpy.call_screen(name, *args, **kwargs)
-ShaderError: 0(63) : error C1503: undefined variable "boxIntersect"
-
+  File "game/shader_port/displayable.rpy", line 45, in event
+    self.camera_rot -= vec2(ev.rel) * 0.01
+  File "game/shader_port/vector.rpy", line 245, in __init__
+    super().__init__(*vals, _type=_type, dims=2)
+  File "game/shader_port/vector.rpy", line 1984, in __init__
+TypeError: float() argument must be a string or a real number, not 'tuple'
 
 -- Full Traceback ------------------------------------------------------------
 
 Full traceback:
   File "game/script.rpy", line 3, in script
     call screen onigiri
-  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\ast.py", line 1994, in execute
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\ast.py", line 2000, in execute
     self.call("execute")
-  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\ast.py", line 1973, in call
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\ast.py", line 1979, in call
     return renpy.statements.call(method, parsed, *args, **kwargs)
-  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\statements.py", line 374, in call
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\statements.py", line 374, in call
     return method(parsed, *args, **kwargs)
   File "renpy/common/000statements.rpy", line 671, in execute_call_screen
     store._return = renpy.call_screen(name, *args, **kwargs)
-  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\exports\statementexports.py", line 345, in call_screen
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\exports\statementexports.py", line 345, in call_screen
     rv = renpy.ui.interact(mouse="screen", type="screen", roll_forward=roll_forward)
-  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\ui.py", line 301, in interact
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\ui.py", line 301, in interact
     rv = renpy.game.interface.interact(roll_forward=roll_forward, **kwargs)
-  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\display\core.py", line 2201, in interact
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\display\core.py", line 2201, in interact
     repeat, rv = self.interact_core(preloads=preloads, trans_pause=trans_pause, pause=pause, pause_start=pause_start, pause_modal=pause_modal, **kwargs) # type: ignore
-  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\display\core.py", line 2865, in interact_core
-    self.draw_screen(root_widget, fullscreen_video, (not fullscreen_video) or video_frame_drawn)
-  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\display\core.py", line 1374, in draw_screen
-    renpy.display.draw.draw_screen(surftree)
-  File "gl2draw.pyx", line 1021, in renpy.gl2.gl2draw.GL2Draw.draw_screen
-  File "gl2draw.pyx", line 1552, in renpy.gl2.gl2draw.GL2DrawingContext.draw
-  File "gl2draw.pyx", line 1533, in renpy.gl2.gl2draw.GL2DrawingContext.draw_one
-  File "gl2draw.pyx", line 1533, in renpy.gl2.gl2draw.GL2DrawingContext.draw_one
-  File "gl2draw.pyx", line 1533, in renpy.gl2.gl2draw.GL2DrawingContext.draw_one
-  [Previous line repeated 5 more times]
-  File "gl2draw.pyx", line 1443, in renpy.gl2.gl2draw.GL2DrawingContext.draw_one
-  File "gl2draw.pyx", line 1398, in renpy.gl2.gl2draw.GL2DrawingContext.draw_model
-  File "C:\Renpy\renpy-8.4.0.24102001+nightly-sdk\renpy\gl2\gl2shadercache.py", line 352, in get
-    rv.load()
-  File "gl2shader.pyx", line 315, in renpy.gl2.gl2shader.Program.load
-  File "gl2shader.pyx", line 298, in renpy.gl2.gl2shader.Program.load_shader
-ShaderError: 0(63) : error C1503: undefined variable "boxIntersect"
-
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\display\core.py", line 3272, in interact_core
+    rv = root_widget.event(ev, x, y, 0)
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\display\layout.py", line 1293, in event
+    rv = i.event(ev, x - xo, y - yo, cst)
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\display\layout.py", line 1293, in event
+    rv = i.event(ev, x - xo, y - yo, cst)
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\display\layout.py", line 1293, in event
+    rv = i.event(ev, x - xo, y - yo, cst)
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\display\screen.py", line 791, in event
+    rv = self.child.event(ev, x, y, st)
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\display\layout.py", line 1293, in event
+    rv = i.event(ev, x - xo, y - yo, cst)
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\display\transform.py", line 1083, in event
+    rv = d.event(ev, cx, cy, st)
+  File "game/shader_port/displayable.rpy", line 45, in event
+    self.camera_rot -= vec2(ev.rel) * 0.01
+  File "game/shader_port/vector.rpy", line 245, in __init__
+    super().__init__(*vals, _type=_type, dims=2)
+  File "game/shader_port/vector.rpy", line 1984, in __init__
+  File "C:\Renpy\renpy-8.4.0 latest nightly\renpy\revertable.py", line 168, in __init__
+    list.__init__(self, *args)
+TypeError: float() argument must be a string or a real number, not 'tuple'
 
 Windows-10-10.0.19045-SP0 AMD64
-Ren'Py 8.4.0.24112602+nightly
+Ren'Py 8.4.0.24113005+nightly
 Onigiri Shader Port 1.0
-Thu Nov 28 07:58:03 2024
+Sun Dec  1 21:08:46 2024

@@ -38,6 +38,24 @@
                 raise renpy.IgnoreEvent()
 
             if ev.type == pygame.MOUSEMOTION:
+                center = vec2(config.screen_width, config.screen_height) / 2
+                renpy.display.interface.set_mouse_pos(*center, .0)
+
+                old_yaw = self.camera_rot.y
+                self.camera_rot += vec2(*ev.rel) * 0.01
+                self.camera_rot %= math.tau
+
+                # Защита от сальтух
+                cor_rot = (self.camera_rot.y+math.pi)%math.tau
+                if cor_rot > math.tau - math.pi / 2:
+                    self.camera_rot.y = old_yaw                
+                elif cor_rot < math.pi / 2:
+                    self.camera_rot.y = old_yaw
+
+                if renpy.display.interface.mouse_focused:
+                    renpy.display.interface.hide_mouse()
+
+                print(ev)
                 pass
 
         def render(self, w, h, st, at):
@@ -46,20 +64,21 @@
 
             #if renpy.display.interface.
 
-            center = vec2(w, h) / 2.0
-            mouse_rel = (center - vec2(*pygame.mouse.get_pos())) * 0.01
-            old_yaw = self.camera_rot.y
-            self.camera_rot -= mouse_rel
-            self.camera_rot %= math.tau    
-            #renpy.display.interface.set_mouse_pos(*center, 1.0)        
-            pygame.mouse.set_pos(center)
+            # center = vec2(w, h) / 2.0
+            # mouse_rel = (center - vec2(*pygame.mouse.get_pos())) * 0.01
+
+            # if renpy.display.interface.mouse_focused:
+            #     old_yaw = self.camera_rot.y
+            #     self.camera_rot -= mouse_rel
+            #     self.camera_rot %= math.tau
+            #     pygame.mouse.set_pos(center)
 
             # Защита от сальтух
-            cor_rot = (self.camera_rot.y+math.pi)%math.tau
-            if cor_rot > math.tau - math.pi / 2:
-                self.camera_rot.y = old_yaw                
-            elif cor_rot < math.pi / 2:
-                self.camera_rot.y = old_yaw
+            # cor_rot = (self.camera_rot.y+math.pi)%math.tau
+            # if cor_rot > math.tau - math.pi / 2:
+            #     self.camera_rot.y = old_yaw                
+            # elif cor_rot < math.pi / 2:
+            #     self.camera_rot.y = old_yaw
 
             # Направление движения
             direction = vec3()
@@ -77,7 +96,8 @@
 
             direction = vec3(temp_direction.x * math.cos(self.camera_rot.x) - temp_direction.y * math.sin(self.camera_rot.x),
                              temp_direction.x * math.sin(self.camera_rot.x) + temp_direction.y * math.cos(self.camera_rot.x),
-                             temp_direction.z)
+                             direction.z)
+                             #temp_direction.z)
 
             self.camera_pos += direction * self.movement_speed * dt
 
@@ -87,7 +107,7 @@
             shader_rend = renpy.Render(w, h)
             shader_rend.fill("#000")
             shader_rend.mesh = True
-            shader_rend.add_shader("onigiri_raycasting")
+            shader_rend.add_shader("onigiri_raytracing")
             shader_rend.add_uniform("u_resolution", (w, h))
             shader_rend.add_uniform("u_time", st)
             shader_rend.add_uniform("u_rot", self.camera_rot)
@@ -100,6 +120,7 @@
             rv.blit(shader_rend, (0, 0))
             rv.blit(Text(f"pos: {round(self.camera_pos,3)}").render(w, h, st, at), (0, 0))
             rv.blit(Text(f"pitch: {round(self.camera_rot.x, 3)} yaw: {round((self.camera_rot.y+math.pi)%math.tau, 3)}").render(w, h, st, at), (0, 36))
+            rv.blit(Text(f"{renpy.display.interface.in_quit_event}, {renpy.display.interface.shown_window}").render(w, h, st, at), (0, 36*2))
 
             renpy.redraw(self, .0)
             return rv
