@@ -58,13 +58,13 @@
                 return vec2(-(dot(ro, p.xyz) + p.w) / dot(rd, p.xyz));
             }
 
-            vec3 getSky(in vec3 rd) {
+            vec4 getSky(in vec3 rd) {
                 vec2 uv = vec2(atan(rd.x, rd.y), asin(rd.z) * 2.0);
                 uv /= 3.14159265;
                 uv = uv * .5 + .5;
 
-                vec3 col = vec3(0.6,0.75,0.85) - 0.97*uv.y;
-                vec3 sun = vec3(0.95, 0.9, 1.0);
+                vec4 col = vec4(vec3(0.6,0.75,0.85) - 0.97*uv.y, 1.0);
+                vec4 sun = vec4(0.95, 0.9, 1.0, 1.0);
 
                 sun *= pow(max(0.0, dot(rd, light)), 32.0);
                 return clamp(sun + col, 0.0, 1.0);
@@ -113,7 +113,7 @@
 
             vec4 traceRay(in vec3 ro, in vec3 rd) {
                 vec3 col = castRay(ro, rd);
-                if(col.x < 0.0) return vec4(getSky(rd), 1.0);
+                if(col.x < 0.0) return getSky(rd);
                 vec3 lightDir = light;
                 if(dot(rd, light) > 0.0) {
                     if(castRay(ro, lightDir).x != -1.0) col *= 0.5;
