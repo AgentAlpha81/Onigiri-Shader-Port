@@ -19,9 +19,9 @@
         """,
 
         fragment_functions="""
-            const float MAX_DIST = 99999.0;
-            vec3 light = normalize(vec3(.85, -.75, -.75));            
-            uniform sampler2D tex1;
+            const float MAX_DIST = 1000.0;            
+            uniform float u_time;
+            vec3 light = normalize(vec3(cos(u_time/10.0), sin(u_time/10.0), -.75));
 
             mat2 rot(in float a) {
                 float s = sin(a);
